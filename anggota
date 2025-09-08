@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BMT HAEN - Anggota</title>
+  <style>
+    :root{
+      --bg:#f2fbf7;
+      --card:#ffffff;
+      --primary:#12a87a;
+      --primary-2:#1e90ff;
+      --muted:#4a5568;
+      --danger:#e03b3b;
+      --ring:#d7efe6;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#e9fdf5 0%,#f7fbff 60%,#ffffff 100%);color:#0b1b2b}
+    .app{max-width:960px;margin:18px auto;border-radius:16px;overflow:hidden;box-shadow:0 14px 40px rgba(6,10,20,.08); padding-top: 100px;}
+    header{
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      background:linear-gradient(100deg,var(--primary),#17b890 40%, var(--primary-2) 150%);
+      color:var(--card);padding:24px 32px;
+      max-width: 960px;
+      margin: 0 auto;
+      border-radius: 0 0 16px 16px;
+      box-shadow:0 14px 40px rgba(6,10,20,.08);
+    }
+    header h1{font-size:2em;margin:0}
+    header .tabs{display:flex;margin-top:24px;gap:8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    header .tabs .tab{
+      white-space: nowrap;
+      padding:8px 16px;border-radius:99px;cursor:pointer;
+      background:rgba(255,255,255,0.2);
+      transition:all .2s ease;
+      font-weight:600;
+    }
+    header .tabs .tab:hover{background:rgba(255,255,255,0.3);}
+    header .tabs .tab.active{background:var(--card);color:var(--primary)}
+    .content{background:var(--bg);padding:24px 32px;min-height:70vh}
+    .card{
+      background:var(--card);
+      border-radius:12px;
+      padding:16px;
+      box-shadow:0 4px 10px rgba(0,0,0,.04);
+      margin-bottom:16px;
+    }
+    .card h4{margin-top:0;margin-bottom:12px}
+    .item{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:12px 0;border-bottom:1px solid #eee;
+    }
+    .item:last-child{border-bottom:none}
+    .muted{color:var(--muted)}
+    .small{font-size:.85em}
+    .btn{
+      padding:8px 12px;
+      border-radius:8px;
+      border:1px solid transparent;
+      cursor:pointer;
+      font-size:.9em;
+      font-weight:600;
+      transition:all .2s ease;
+    }
+    .btn.primary{background:var(--primary);color:var(--card)}
+    .btn.danger{background:var(--danger);color:var(--card)}
+    .btn.ghost{
+      background:transparent;color:var(--primary-2);border-color:var(--primary-2);
+      font-size:.8em;
+    }
+    .btn.ghost:hover{background:var(--primary-2);color:var(--card)}
+    .danger.ghost{color:var(--danger);border-color:var(--danger)}
+    .danger.ghost:hover{background:var(--danger);color:var(--card)}
+    .danger:hover{background:#c03030}
+    .form-group{margin-bottom:12px}
+    .form-group label{display:block;margin-bottom:4px;font-weight:600}
+    .form-group input, .form-group select{
+      width:100%;
+      padding:8px 12px;
+      border:1px solid #ccc;
+      border-radius:8px;
+      font-size:1em;
+    }
+    .form-row{display:flex;gap:12px;margin-bottom:12px}
+    .form-row > *{flex:1}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .modal-backdrop{
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,.5);
+      display:none;align-items:center;justify-content:center;
+      z-index:100;
+    }
+    .modal-content{
+      background:var(--card);padding:24px;border-radius:12px;
+      max-width:400px;width:90%;
+      box-shadow:0 12px 24px rgba(0,0,0,.1);
+    }
+    .modal-content h4{margin:0 0 16px}
+    .modal-content .modal-buttons{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+    .pill{
+      background:var(--ring);
+      color:var(--primary);
+      padding:4px 10px;
+      border-radius:99px;
+      font-weight:600;
+      font-size:.75em;
+    }
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+    .stat-grid .card{margin:0}
+    .muted-block{padding:16px;background:#f0f4f7;border-radius:8px;color:#6b7280;text-align:center;}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>BMT HAEN - Anggota</h1>
+      <div class="form-group" style="margin-top:24px;">
+        <label for="selMemberView" style="color:var(--card)">Pilih Nama Anda</label>
+        <select id="selMemberView"></select>
+      </div>
+    </header>
+    <div class="content">
+      <div id="member-view">
+        <div class="card" id="memberReportCard" style="display:none">
+          <h4>Laporan Keuangan Anda</h4>
+          <div id="memberReportContent"></div>
+        </div>
+        <div class="card" id="memberClaimsCard" style="display:none">
+          <h4>Riwayat Klaim Bagi Hasil</h4>
+          <div id="listClaimsMember"></div>
+        </div>
+        <div class="card" id="memberDepositCard" style="display:none">
+          <h4>Riwayat Setoran Modal</h4>
+          <div id="listSetoranMember"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    /* =========================
+       Storage keys & helpers
+       ========================= */
+    const KEY = { MEMBERS:'mk_members', DEPOSITS:'mk_deposits', CREDITS:'mk_credits', PAYMENTS:'mk_payments', CLAIMS:'mk_claims', EXPENSES:'mk_expenses' };
+    const $ = id => document.getElementById(id);
+    const load = k => JSON.parse(localStorage.getItem(k) || '[]');
+    const fmtRupiah = n => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Number(n)||0);
+
+    /* ========== Perhitungan Laporan ========== */
+    function computeMemberData(memberId) {
+      const deposits = load(KEY.DEPOSITS);
+      const payments = load(KEY.PAYMENTS);
+      const credits = load(KEY.CREDITS);
+      const expenses = load(KEY.EXPENSES);
+      
+      const totalDana = deposits.reduce((sum, d) => sum + (Number(d.amount) || 0), 0);
+      let totalProfit = 0;
+      payments.forEach(p=>{
+        const c = credits.find(x=>x.id===p.creditId);
+        if(!c) return;
+        const margin = (Number(c.hargaJual)||0) - (Number(c.hargaBeli)||0);
+        const share = (Number(p.amount)||0) / (Number(c.hargaJual)||1);
+        totalProfit += margin * share;
+      });
+      const totalExpenses = expenses.reduce((s,e)=>s+(+e.amount||0),0);
+      const totalNetProfit = totalProfit - totalExpenses;
+      const memberDeposits = deposits.filter(d => d.memberId === memberId).reduce((s, d) => s + (Number(d.amount) || 0), 0);
+      const share = totalDana > 0 ? totalNetProfit * (memberDeposits / totalDana) : 0;
+      const claims = load(KEY.CLAIMS).filter(c => c.memberId === memberId);
+      const claimedAmt = claims.reduce((s, c) => s + (Number(c.amount) || 0), 0);
+      const available = Math.max(0, share - claimedAmt);
+      return { memberDeposits, share, claimedAmt, available, totalNetProfit };
+    }
+
+    /* ========== Rendering Tampilan ========== */
+    function renderMemberView(memberId){
+      const members = load(KEY.MEMBERS);
+      const member = members.find(m => m.id === memberId);
+      if(!member){
+        $('memberReportCard').style.display = 'none';
+        $('memberClaimsCard').style.display = 'none';
+        $('memberDepositCard').style.display = 'none';
+        return;
+      }
+      $('memberReportCard').style.display = 'block';
+      $('memberClaimsCard').style.display = 'block';
+      $('memberDepositCard').style.display = 'block';
+      
+      const data = computeMemberData(memberId);
+      const htmlReport = `
+        <div class="stat-grid">
+          <div class="card small muted"><div>Total Setoran Anda</div><div style="font-weight:800;margin-top:8px">${fmtRupiah(data.memberDeposits)}</div></div>
+          <div class="card small muted"><div>Keuntungan Bersih BMT</div><div style="font-weight:800;margin-top:8px">${fmtRupiah(data.totalNetProfit)}</div></div>
+          <div class="card small muted" style="background:var(--primary); color: var(--card);"><div>Porsi Bagi Hasil Anda</div><div style="font-weight:800;margin-top:8px">${fmtRupiah(data.share)}</div></div>
+          <div class="card small muted"><div>Sudah Diklaim</div><div style="font-weight:800;margin-top:8px">${fmtRupiah(data.claimedAmt)}</div></div>
+          <div class="card small muted" style="background:#5cb85c; color: var(--card);"><div>Tersedia untuk Diklaim</div><div style="font-weight:800;margin-top:8px">${fmtRupiah(data.available)}</div></div>
+        </div>
+      `;
+      $('memberReportContent').innerHTML = htmlReport;
+      
+      renderClaimsList(memberId);
+      renderDepositsList(memberId);
+    }
+    
+    function renderClaimsList(memberId){
+      const claims = load(KEY.CLAIMS).filter(c=>c.memberId === memberId).slice().reverse();
+      const cont = $('listClaimsMember');
+      cont.innerHTML = '';
+      if(claims.length === 0){ cont.innerHTML = '<div class="muted small">Belum ada riwayat klaim bagi hasil.</div>'; return; }
+      claims.forEach(c => {
+        const el = document.createElement('div'); el.className = 'item';
+        el.innerHTML = `<div><div style="font-weight:700">Klaim</div><div class="muted small">${new Date(c.date).toLocaleDateString('id-ID', {year:'numeric', month:'long'})}</div></div><div style="font-weight:700">${fmtRupiah(c.amount)}</div>`;
+        cont.appendChild(el);
+      });
+    }
+
+    function renderDepositsList(memberId){
+      const deposits = load(KEY.DEPOSITS).filter(d=>d.memberId === memberId).slice().reverse();
+      const cont = $('listSetoranMember');
+      cont.innerHTML = '';
+      if(deposits.length === 0){ cont.innerHTML = '<div class="muted small">Belum ada riwayat setoran modal.</div>'; return; }
+      deposits.forEach(d => {
+        const dateStr = d.date.length === 7 ? d.date : new Date(d.date).toLocaleDateString('id-ID', {year:'numeric', month:'long'});
+        const el = document.createElement('div'); el.className = 'item';
+        el.innerHTML = `<div><div style="font-weight:700">Setoran</div><div class="muted small">${dateStr}</div></div><div style="font-weight:700">${fmtRupiah(d.amount)}</div>`;
+        cont.appendChild(el);
+      });
+    }
+
+    /* Selectors population & reset */
+    function populateMemberSelectors(){
+      const members = load(KEY.MEMBERS);
+      const el = $('selMemberView');
+      el.innerHTML = '<option value="">-- pilih nama Anda --</option>';
+      members.forEach(m=>{
+        const o = document.createElement('option'); o.value = m.id; o.textContent = m.name; el.appendChild(o);
+      });
+    }
+
+    /* Init */
+    function initApp(){
+      populateMemberSelectors();
+      $('selMemberView').addEventListener('change', (e) => {
+        const selectedId = e.target.value;
+        if (selectedId) {
+          renderMemberView(selectedId);
+        } else {
+          $('memberReportCard').style.display = 'none';
+          $('memberClaimsCard').style.display = 'none';
+          $('memberDepositCard').style.display = 'none';
+        }
+      });
+    }
+    initApp();
+  </script>
+</body>
+</html>
