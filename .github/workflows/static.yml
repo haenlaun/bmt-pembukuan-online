@@ -1,0 +1,1158 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BMT HAEN</title>
+  <style>
+    :root{
+      --bg:#f2fbf7;
+      --card:#ffffff;
+      --primary:#12a87a;
+      --primary-2:#1e90ff;
+      --muted:#4a5568;
+      --danger:#e03b3b;
+      --ring:#d7efe6;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#e9fdf5 0%,#f7fbff 60%,#ffffff 100%);color:#0b1b2b}
+    .app{max-width:960px;margin:18px auto;border-radius:16px;overflow:hidden;box-shadow:0 14px 40px rgba(6,10,20,.08); padding-top: 100px;}
+    header{
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      background:linear-gradient(100deg,var(--primary),#17b890 40%, var(--primary-2) 150%);
+      color:var(--card);padding:24px 32px;
+      max-width: 960px;
+      margin: 0 auto;
+      border-radius: 0 0 16px 16px;
+      box-shadow:0 14px 40px rgba(6,10,20,.08);
+    }
+    header h1{font-size:2em;margin:0}
+    header .tabs{display:flex;margin-top:24px;gap:8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    header .tabs .tab{
+      white-space: nowrap;
+      padding:8px 16px;border-radius:99px;cursor:pointer;
+      background:rgba(255,255,255,0.2);
+      transition:all .2s ease;
+      font-weight:600;
+    }
+    header .tabs .tab:hover{background:rgba(255,255,255,0.3);}
+    header .tabs .tab.active{background:var(--card);color:var(--primary)}
+    .content{background:var(--bg);padding:24px 32px;min-height:70vh}
+    .card{
+      background:var(--card);
+      border-radius:12px;
+      padding:16px;
+      box-shadow:0 4px 10px rgba(0,0,0,.04);
+      margin-bottom:16px;
+    }
+    .card h4{margin-top:0;margin-bottom:12px}
+    .item{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:12px 0;border-bottom:1px solid #eee;
+    }
+    .item:last-child{border-bottom:none}
+    .muted{color:var(--muted)}
+    .small{font-size:.85em}
+    .btn{
+      padding:8px 12px;
+      border-radius:8px;
+      border:1px solid transparent;
+      cursor:pointer;
+      font-size:.9em;
+      font-weight:600;
+      transition:all .2s ease;
+    }
+    .btn.primary{background:var(--primary);color:var(--card)}
+    .btn.danger{background:var(--danger);color:var(--card)}
+    .btn.ghost{
+      background:transparent;color:var(--primary-2);border-color:var(--primary-2);
+      font-size:.8em;
+    }
+    .btn.ghost:hover{background:var(--primary-2);color:var(--card)}
+    .danger.ghost{color:var(--danger);border-color:var(--danger)}
+    .danger.ghost:hover{background:var(--danger);color:var(--card)}
+    .danger:hover{background:#c03030}
+    .form-group{margin-bottom:12px}
+    .form-group label{display:block;margin-bottom:4px;font-weight:600}
+    .form-group input, .form-group select{
+      width:100%;
+      padding:8px 12px;
+      border:1px solid #ccc;
+      border-radius:8px;
+      font-size:1em;
+    }
+    .form-row{display:flex;gap:12px;margin-bottom:12px}
+    .form-row > *{flex:1}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .modal-backdrop{
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,.5);
+      display:none;align-items:center;justify-content:center;
+      z-index:100;
+    }
+    .modal-content{
+      background:var(--card);padding:24px;border-radius:12px;
+      max-width:400px;width:90%;
+      box-shadow:0 12px 24px rgba(0,0,0,.1);
+    }
+    .modal-content h4{margin:0 0 16px}
+    .modal-content .modal-buttons{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+    .pill{
+      background:var(--ring);
+      color:var(--primary);
+      padding:4px 10px;
+      border-radius:99px;
+      font-weight:600;
+      font-size:.75em;
+    }
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+    .stat-grid .card{margin:0}
+    .muted-block{padding:16px;background:#f0f4f7;border-radius:8px;color:#6b7280;text-align:center;}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>BMT HAEN</h1>
+      <div class="tabs">
+        <div class="tab active" data-tab="dashboard">Dashboard</div>
+        <div class="tab" data-tab="members">Anggota</div>
+        <div class="tab" data-tab="setoran">Setoran</div>
+        <div class="tab" data-tab="kredit">Kredit</div>
+        <div class="tab" data-tab="piutang">Piutang</div>
+        <div class="tab" data-tab="claims">Bagi Hasil</div>
+        <div class="tab" data-tab="biaya">Biaya</div>
+        <div class="tab" data-tab="laporan">Laporan</div>
+        <div class="tab" data-tab="data">Data</div>
+      </div>
+    </header>
+    <div class="content">
+      <div id="dashboard" class="view">
+        <div class="card">
+          <h4>Ringkasan Keuangan</h4>
+          <div class="stat-grid" id="dashboardContent"></div>
+        </div>
+      </div>
+      <div id="members" class="view" style="display:none">
+        <div class="grid">
+          <div class="card">
+            <h4>Tambah Anggota</h4>
+            <div class="form-group">
+              <label for="inpNewMember">Nama Anggota</label>
+              <input type="text" id="inpNewMember" placeholder="Nama lengkap">
+            </div>
+            <button class="btn primary" id="btnAddMember">Tambah</button>
+          </div>
+          <div class="card">
+            <h4>Ubah Nama Anggota</h4>
+            <div class="form-group">
+              <label for="selEditMember">Pilih Anggota</label>
+              <select id="selEditMember"></select>
+            </div>
+            <div class="form-group">
+              <label for="inpEditMember">Nama Baru</label>
+              <input type="text" id="inpEditMember" placeholder="Nama baru">
+            </div>
+            <div style="display:flex;gap:8px;justify-content:flex-end">
+              <button class="btn primary" id="btnUpdateMember">Ubah</button>
+              <button class="btn ghost danger" id="btnDeleteMember" style="display:none">Hapus</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="setoran" class="view" style="display:none">
+        <div class="card">
+          <h4>Setor Modal Anggota</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="selMemberSetor">Anggota</label>
+              <select id="selMemberSetor"></select>
+            </div>
+            <div class="form-group">
+              <label for="inpSetorDate">Bulan & Tahun</label>
+              <input type="month" id="inpSetorDate">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inpSetorAmount">Jumlah Setoran</label>
+            <input type="number" id="inpSetorAmount" placeholder="Jumlah (Rp)">
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn primary" id="btnSaveSetor">Simpan Setoran</button>
+            <button class="btn ghost danger" id="btnClearSetor">Bersihkan</button>
+          </div>
+        </div>
+        <div class="card">
+          <h4>Setoran Massal</h4>
+          <p class="muted small">Setor Rp 20.000 untuk semua anggota bulan ini.</p>
+          <button class="btn primary" id="btnMassSetor">Setor Otomatis Rp 20.000</button>
+        </div>
+        <div class="card">
+          <h4>Riwayat Setoran</h4>
+          <div class="form-group">
+            <input type="text" id="inpSearchSetoran" placeholder="Cari nama anggota...">
+          </div>
+          <div id="listSetoran"></div>
+        </div>
+      </div>
+
+      <div id="kredit" class="view" style="display:none">
+        <div class="card">
+          <h4 id="titleKredit">Kredit Barang</h4>
+          <div class="form-group">
+            <label for="selMemberKredit">Anggota</label>
+            <select id="selMemberKredit"></select>
+          </div>
+          <div class="form-group">
+            <label for="inpItem">Nama Barang</label>
+            <input type="text" id="inpItem" placeholder="misal: Sepeda, HP, dsb.">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inpHargaBeli">Harga Beli</label>
+              <input type="number" id="inpHargaBeli" placeholder="Rp">
+            </div>
+            <div class="form-group">
+              <label for="inpMargin">Margin Keuntungan (%)</label>
+              <input type="number" id="inpMargin" value="20" min="0">
+            </div>
+            <div class="form-group">
+              <label for="inpTenor">Tenor (bulan)</label>
+              <input type="number" id="inpTenor" value="5" min="1">
+            </div>
+          </div>
+          <button class="btn primary" id="btnSaveKredit">Simpan Kredit</button>
+        </div>
+        <div class="card">
+          <h4>Daftar Kredit Aktif</h4>
+          <div class="form-group">
+            <input type="text" id="inpSearchKredit" placeholder="Cari nama anggota atau barang...">
+          </div>
+          <div id="listKredit"></div>
+        </div>
+      </div>
+      
+      <div id="piutang" class="view" style="display:none">
+        <div class="card">
+          <h4>Piutang Berjalan (kredit yang belum lunas)</h4>
+          <div class="form-group">
+            <input type="text" id="inpSearchPiutang" placeholder="Cari nama anggota atau barang...">
+          </div>
+          <div id="listPiutang"></div>
+        </div>
+        <div class="card">
+          <h4>Riwayat Pembayaran</h4>
+          <div class="form-group">
+            <input type="text" id="inpSearchPayments" placeholder="Cari nama anggota atau barang...">
+          </div>
+          <div id="listPayments"></div>
+        </div>
+      </div>
+
+      <div id="claims" class="view" style="display:none">
+        <div class="card">
+          <h4>Ambil Bagi Hasil (Klaim)</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="selMemberClaim">Anggota</label>
+              <select id="selMemberClaim"></select>
+            </div>
+            <div class="form-group">
+              <label for="inpClaimAmount">Jumlah Klaim</label>
+              <input type="number" id="inpClaimAmount" placeholder="Jumlah (Rp)">
+            </div>
+          </div>
+          <button class="btn primary" id="btnClaim">Klaim Bagi Hasil</button>
+          <div style="margin-top:16px;">
+            <h4>Riwayat Klaim</h4>
+            <div class="form-group">
+              <input type="text" id="inpSearchClaims" placeholder="Cari nama anggota...">
+            </div>
+            <div id="listClaims"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="biaya" class="view" style="display:none">
+        <div class="card">
+          <h4>Catat Biaya Operasional</h4>
+          <div class="form-group">
+            <label for="inpBiayaName">Nama Biaya</label>
+            <input type="text" id="inpBiayaName" placeholder="misal: Biaya listrik, transport, dsb.">
+          </div>
+          <div class="form-group">
+            <label for="inpBiayaAmount">Jumlah Biaya</label>
+            <input type="number" id="inpBiayaAmount" placeholder="Rp">
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn primary" id="btnSaveBiaya">Simpan Biaya</button>
+            <button class="btn ghost danger" id="btnClearBiaya">Bersihkan</button>
+          </div>
+        </div>
+        <div class="card">
+          <h4>Riwayat Biaya</h4>
+          <div class="form-group">
+            <input type="text" id="inpSearchBiaya" placeholder="Cari nama biaya...">
+          </div>
+          <div id="listBiaya"></div>
+        </div>
+      </div>
+
+      <div id="laporan" class="view" style="display:none">
+        <div class="card">
+          <h4>Pengaturan Laporan</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="selReportMode">Mode Laporan</label>
+              <select id="selReportMode">
+                <option value="acc">Akumulasi (Sejak Awal)</option>
+                <option value="monthly">Bulanan</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="inpReportMonth">Bulan (hanya untuk mode Bulanan)</label>
+              <input type="month" id="inpReportMonth">
+            </div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn primary" id="btnShowReport">Tampilkan Laporan</button>
+            <button class="btn ghost" id="btnExportCSV">Ekspor CSV</button>
+          </div>
+        </div>
+        <div id="reportContent" class="card"></div>
+      </div>
+
+      <div id="data" class="view" style="display:none">
+        <div class="card">
+            <h4>Ekspor Data</h4>
+            <p class="muted small">Unduh semua data Anda ke dalam file `bmt_haen_data.json`.</p>
+            <button class="btn primary" onclick="exportData()">Ekspor Data</button>
+        </div>
+        <div class="card">
+            <h4>Impor Data</h4>
+            <p class="muted small">Unggah file `.json` untuk memulihkan data. Ini akan menimpa data yang ada saat ini.</p>
+            <input type="file" id="inpImportFile" accept=".json" style="display:none">
+            <button class="btn ghost" onclick="document.getElementById('inpImportFile').click()">Pilih File</button>
+            <button class="btn primary" id="btnImport" style="display:none" onclick="importData()">Impor Data</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal" class="modal-backdrop">
+    <div class="modal-content">
+      <p id="modalMessage"></p>
+      <div class="form-group" style="margin-top:20px;">
+        <input type="number" id="modalInput" placeholder="Masukkan jumlah bayar">
+      </div>
+      <div class="modal-buttons">
+        <button class="btn ghost" id="modalCancel">Batal</button>
+        <button class="btn primary" id="modalYes">OK</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    /* =========================
+       Storage keys & helpers
+       ========================= */
+    const KEY = { MEMBERS:'mk_members', DEPOSITS:'mk_deposits', CREDITS:'mk_credits', PAYMENTS:'mk_payments', CLAIMS:'mk_claims', EXPENSES:'mk_expenses' };
+    const $ = id => document.getElementById(id);
+    const uid = (p='id') => p + '_' + Date.now().toString(36) + Math.floor(Math.random()*9999).toString(36);
+    const load = k => JSON.parse(localStorage.getItem(k) || '[]');
+    const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+    const fmtRupiah = n => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Number(n)||0);
+
+    /* Seed 50 anggota default jika kosong */
+    function seedMembers(){
+      if(!localStorage.getItem(KEY.MEMBERS)){
+        const arr=[]; for(let i=1;i<=50;i++) arr.push({id: uid('m'), name: `Anggota ${i}`});
+        save(KEY.MEMBERS, arr);
+      }
+    }
+
+    /* Tabs */
+    document.querySelectorAll('.tab').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const t = btn.dataset.tab;
+        document.querySelectorAll('.view').forEach(v=>v.style.display='none');
+        $(t).style.display = '';
+        if(t==='dashboard') renderDashboard();
+        if(t==='members') renderMembers();
+        if(t==='setoran') { renderSetoran(); populateMemberSelectors(); }
+        if(t==='kredit') { renderKredit(); populateMemberSelectors(); }
+        if(t==='piutang') { renderPiutang(); renderPayments(); }
+        if(t==='claims') renderClaims();
+        if(t==='biaya') { renderBiaya(); }
+        if(t==='laporan') renderReport(false);
+      });
+    });
+
+    /* Modal util */
+    function showModal(message, options = {}) {
+      $('modalMessage').textContent = message || '';
+      const input = $('modalInput');
+      if(options.input){
+        input.style.display = ''; input.placeholder = options.placeholder || ''; input.value = options.inputValue || '';
+      } else { input.style.display = 'none'; input.value = ''; }
+      $('modal').style.display = 'block';
+      $('modalYes').onclick = ()=> {
+        $('modal').style.display = 'none';
+        if(typeof options.onConfirm === 'function') options.onConfirm(input.value || null);
+      };
+      $('modalCancel').onclick = ()=> $('modal').style.display = 'none';
+    }
+
+    /* ========== Dashboard ========== */
+    function renderDashboard(){
+        const deposits = load(KEY.DEPOSITS);
+        const payments = load(KEY.PAYMENTS);
+        const credits = load(KEY.CREDITS);
+        const expenses = load(KEY.EXPENSES);
+        const members = load(KEY.MEMBERS);
+
+        const totalDana = deposits.reduce((sum, d) => sum + (Number(d.amount) || 0), 0);
+        const totalPiutang = credits.reduce((sum, c) => sum + (Number(c.sisa) || 0), 0);
+        const totalPayments = payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+        const totalExpenses = expenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+        
+        let totalProfit = 0;
+        payments.forEach(p=>{
+          const c = credits.find(x=>x.id===p.creditId);
+          if(!c) return;
+          const margin = (Number(c.hargaJual)||0) - (Number(c.hargaBeli)||0);
+          const share = (Number(p.amount)||0) / (Number(c.hargaJual)||1);
+          totalProfit += margin * share;
+        });
+
+        const keuntunganBersih = totalProfit - totalExpenses;
+
+        const html = `
+            <div class="card small muted"><div>Total Dana Terkumpul</div><div style="font-weight:800;margin-top:8px">${fmtRupiah(totalDana)}</div></div>
+            <div class="card small muted"><div>Total Piutang Berjalan</div><div style="font-weight:800;margin-top:8px">${fmtRupiah(totalPiutang)}</div></div>
+            <div class="card small muted"><div>Total Keuntungan Kotor</div><div style="font-weight:800;margin-top:8px">${fmtRupiah(totalProfit)}</div></div>
+            <div class="card small muted"><div>Total Biaya Operasional</div><div style="font-weight:800;margin-top:8px">${fmtRupiah(totalExpenses)}</div></div>
+            <div class="card small muted" style="background:var(--primary); color: var(--card);"><div>Keuntungan Bersih</div><div style="font-weight:800;margin-top:8px">${fmtRupiah(keuntunganBersih)}</div></div>
+            <div class="card small muted"><div>Jumlah Anggota</div><div style="font-weight:800;margin-top:8px">${members.length}</div></div>
+        `;
+
+        $('dashboardContent').innerHTML = html;
+    }
+
+    /* ========== Members ========== */
+    let editMemberId = null;
+    function renderMembers(){
+      const members = load(KEY.MEMBERS);
+      const selEdit = $('selEditMember'); selEdit.innerHTML = '<option value="">-- pilih anggota --</option>';
+      members.forEach(m=>{
+        const opt1 = document.createElement('option'); opt1.value=m.id; opt1.textContent=m.name; selEdit.appendChild(opt1);
+      });
+      // Reset form edit saat tab anggota dibuka
+      $('selEditMember').value = '';
+      $('inpEditMember').value = '';
+      $('btnDeleteMember').style.display = 'none';
+    }
+    
+    // Handler untuk perubahan dropdown "Pilih Anggota"
+    $('selEditMember').addEventListener('change', (e) => {
+        const selectedId = e.target.value;
+        const member = load(KEY.MEMBERS).find(m => m.id === selectedId);
+        if (member) {
+            $('inpEditMember').value = member.name;
+            $('btnDeleteMember').style.display = '';
+            $('btnDeleteMember').onclick = () => showModal('Hapus anggota ini?', { onConfirm: () => deleteMember(selectedId) });
+        } else {
+            $('inpEditMember').value = '';
+            $('btnDeleteMember').style.display = 'none';
+        }
+    });
+
+    $('btnAddMember').addEventListener('click', ()=>{
+      const name = $('inpNewMember').value.trim();
+      if(!name){ return; }
+      const members = load(KEY.MEMBERS);
+      members.push({id: uid('m'), name});
+      save(KEY.MEMBERS, members);
+      $('inpNewMember').value='';
+      renderMembers(); populateMemberSelectors(); renderDashboard(); renderReport(false);
+    });
+
+    $('btnUpdateMember').addEventListener('click', ()=>{
+      const id = $('selEditMember').value;
+      const name = $('inpEditMember').value.trim();
+      if(!id || !name){ return; }
+      const members = load(KEY.MEMBERS);
+      const idx = members.findIndex(x=>x.id===id);
+      if(idx>=0){ members[idx].name = name; save(KEY.MEMBERS, members); }
+      $('selEditMember').value = '';
+      $('inpEditMember').value = '';
+      $('btnDeleteMember').style.display = 'none';
+      renderMembers(); populateMemberSelectors(); renderDashboard(); renderReport(false);
+    });
+
+    function deleteMember(id){
+      const members = load(KEY.MEMBERS).filter(m=>m.id!==id);
+      save(KEY.MEMBERS, members);
+      $('selEditMember').value = '';
+      $('inpEditMember').value = '';
+      $('btnDeleteMember').style.display = 'none';
+      renderMembers(); populateMemberSelectors(); renderDashboard(); renderReport(false);
+    }
+
+    /* ===== Claims (Tarik Bagi Hasil) ===== */
+    $('inpSearchClaims').addEventListener('input', ()=> renderClaims());
+    function renderClaims(){
+      const claims = load(KEY.CLAIMS);
+      const members = load(KEY.MEMBERS);
+      const cont = $('listClaims'); cont.innerHTML='';
+      const searchTerm = $('inpSearchClaims').value.toLowerCase();
+      const filteredClaims = claims.filter(c => {
+          const member = members.find(m => m.id === c.memberId) || {};
+          return member.name.toLowerCase().includes(searchTerm);
+      }).slice().reverse();
+
+      if(filteredClaims.length===0){ cont.innerHTML = '<div class="muted">Belum ada klaim.</div>'; return; }
+      filteredClaims.forEach(c=>{
+        const nm = (members.find(m=>m.id===c.memberId)||{}).name || '—';
+        const el = document.createElement('div'); el.className='item';
+        el.innerHTML = `<div><div style="font-weight:700">${nm}</div><div class="muted small">${new Date(c.date).toLocaleDateString('id-ID', {year:'numeric', month:'long'})}</div></div><div style="font-weight:700">${fmtRupiah(c.amount)}</div>`;
+        cont.appendChild(el);
+      });
+    }
+    $('btnClaim').addEventListener('click', ()=>{
+      const memberId = $('selMemberClaim').value;
+      const amount = Number($('inpClaimAmount').value) || 0;
+      if(!memberId || amount<=0){ return; }
+      const modeMonthly = $('selReportMode').value === 'monthly';
+      const ym = modeMonthly ? $('inpReportMonth').value : null;
+      const available = computeAvailableForMember(memberId, ym);
+      if(amount > available){
+        showModal('Jumlah klaim melebihi saldo tersedia: ' + fmtRupiah(available));
+        return;
+      }
+      const claims = load(KEY.CLAIMS);
+      claims.push({ id: uid('cl'), memberId, amount, date: new Date().toISOString() });
+      save(KEY.CLAIMS, claims);
+      $('inpClaimAmount').value = '';
+      renderClaims(); renderDashboard(); renderReport(false);
+    });
+    function computeAvailableForMember(memberId, monthYm=null){
+      const payments = load(KEY.PAYMENTS);
+      const credits = load(KEY.CREDITS);
+      const deposits = load(KEY.DEPOSITS);
+      const expenses = load(KEY.EXPENSES);
+
+      const filteredPayments = payments.filter(p=>{
+        if(!monthYm) return true;
+        const dt = new Date(p.date); const [y,m] = monthYm.split('-').map(Number);
+        return dt.getFullYear()===y && (dt.getMonth()+1)===m;
+      });
+      let totalProfitRecognized = 0;
+      filteredPayments.forEach(p=>{
+        const c = credits.find(x=>x.id===p.creditId); if(!c) return;
+        const margin = (Number(c.hargaJual)||0) - (Number(c.hargaBeli)||0);
+        const share = (Number(p.amount)||0) / (Number(c.hargaJual)||1);
+        totalProfitRecognized += margin * share;
+      });
+
+      const filteredDeposits = deposits.filter(d=>{
+        if(!monthYm) return true;
+        const dt = new Date(d.date); const [y,m] = monthYm.split('-').map(Number);
+        return dt.getFullYear()===y && (dt.getMonth()+1)===m;
+      });
+
+      const filteredExpenses = expenses.filter(e=>{
+        if(!monthYm) return true;
+        const dt = new Date(e.date); const [y,m] = monthYm.split('-').map(Number);
+        return dt.getFullYear()===y && (dt.getMonth()+1)===m;
+      });
+
+      const totalDeposits = filteredDeposits.reduce((s,d)=>s+(+d.amount||0),0);
+      const totalExpenses = filteredExpenses.reduce((s,e)=>s+(+e.amount||0),0);
+      const totalNetProfit = totalProfitRecognized - totalExpenses;
+      const memberDeposits = filteredDeposits.filter(d=>d.memberId===memberId).reduce((s,d)=>s+(+d.amount||0),0);
+      const share = totalDeposits>0 ? totalNetProfit * (memberDeposits/totalDeposits) : 0;
+      const claims = load(KEY.CLAIMS).filter(cl=>{
+        if(cl.memberId !== memberId) return false;
+        if(!monthYm) return true;
+        const dt = new Date(cl.date); const [y,m] = monthYm.split('-').map(Number);
+        return dt.getFullYear()===y && (dt.getMonth()+1)===m;
+      });
+      const claimed = claims.reduce((s,c)=>s+(+c.amount||0),0);
+      return Math.max(0, Math.round(share - claimed));
+    }
+
+    /* ========== Setoran ========== */
+    $('inpSearchSetoran').addEventListener('input', ()=> renderSetoran());
+    $('btnSaveSetor').addEventListener('click', ()=>{
+      const memberId = $('selMemberSetor').value;
+      const amount = Number($('inpSetorAmount').value) || 0;
+      const date = $('inpSetorDate').value;
+      if(!memberId || !date || amount<0){ return; }
+      const deposits = load(KEY.DEPOSITS);
+      deposits.push({ id: uid('d'), memberId, amount, date });
+      save(KEY.DEPOSITS, deposits);
+      $('inpSetorAmount').value=''; $('inpSetorDate').value='';
+      renderSetoran(); renderDashboard(); renderReport(false);
+    });
+
+    $('btnMassSetor').addEventListener('click', ()=>{
+      showModal('Setor Rp 20.000 untuk semua anggota bulan ini?', {
+        onConfirm: () => {
+          const members = load(KEY.MEMBERS);
+          const deposits = load(KEY.DEPOSITS);
+          const today = new Date().toISOString().slice(0, 7); // YYYY-MM
+          members.forEach(m => {
+            deposits.push({ id: uid('d'), memberId: m.id, amount: 20000, date: today });
+          });
+          save(KEY.DEPOSITS, deposits);
+          renderSetoran();
+          renderDashboard();
+          renderReport(false);
+          showModal('Setoran massal berhasil! Silakan periksa riwayat setoran.', { onConfirm: null });
+        }
+      });
+    });
+
+    $('btnClearSetor').addEventListener('click', ()=>{ $('inpSetorAmount').value=''; $('inpSetorDate').value=''; });
+    function renderSetoran(){
+      const deposits = load(KEY.DEPOSITS);
+      const members = load(KEY.MEMBERS);
+      const cont = $('listSetoran'); cont.innerHTML='';
+      const searchTerm = $('inpSearchSetoran').value.toLowerCase();
+      const filteredDeposits = deposits.filter(d => {
+        const member = members.find(m => m.id === d.memberId) || {};
+        return member.name.toLowerCase().includes(searchTerm);
+      }).slice().reverse();
+
+      if(filteredDeposits.length===0){ cont.innerHTML = `<div class="muted small">Belum ada setoran.</div>`; return; }
+      filteredDeposits.forEach(d=>{
+        const nm = (members.find(m=>m.id===d.memberId)||{}).name || '—';
+        const dateStr = d.date.length === 7 ? d.date : new Date(d.date).toLocaleDateString('id-ID', {year:'numeric', month:'long'});
+        const el = document.createElement('div'); el.className='item';
+        el.innerHTML = `<div>
+          <div style="font-weight:700">${nm}</div>
+          <div class="muted small">${dateStr}</div>
+        </div>
+        <div style="text-align:right;display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+          <div style="font-weight:700">${fmtRupiah(d.amount)}</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn ghost" onclick="showEditDepositModal('${d.id}')">Edit</button>
+            <button class="btn danger" onclick="showModal('Hapus setoran ini?', { onConfirm: ()=>deleteDeposit('${d.id}') })">Hapus</button>
+          </div>
+        </div>`;
+        cont.appendChild(el);
+      });
+    }
+
+    function showEditDepositModal(depositId) {
+      const deposits = load(KEY.DEPOSITS);
+      const deposit = deposits.find(d => d.id === depositId);
+      if (!deposit) return;
+      showModal(`Edit jumlah setoran: ${fmtRupiah(deposit.amount)}`, {
+        input: true,
+        inputValue: deposit.amount,
+        placeholder: 'Masukkan jumlah baru (Rp)',
+        onConfirm: (newAmount) => {
+          const newAmt = Number(newAmount) || 0;
+          if (newAmt < 0) return;
+          deposit.amount = newAmt;
+          save(KEY.DEPOSITS, deposits);
+          renderSetoran(); renderDashboard();
+          renderReport(false);
+        }
+      });
+    }
+
+    function deleteDeposit(depositId) {
+      const deposits = load(KEY.DEPOSITS);
+      const updatedDeposits = deposits.filter(d => d.id !== depositId);
+      save(KEY.DEPOSITS, updatedDeposits);
+      renderSetoran(); renderDashboard();
+      renderReport(false);
+    }
+
+    /* ========== Kredit (tambah/edit/hapus) ========== */
+    $('inpSearchKredit').addEventListener('input', ()=> renderKredit());
+    let editCreditId = null;
+    $('btnSaveKredit').addEventListener('click', ()=>{
+      const memberId = $('selMemberKredit').value;
+      const item = $('inpItem').value.trim();
+      const hargaBeli = Number($('inpHargaBeli').value) || 0;
+      const margin = Number($('inpMargin').value) || 0;
+      const tenor = Number($('inpTenor').value) || 1;
+      if(!memberId || !item || hargaBeli<=0 || margin < 0){ return; }
+      const credits = load(KEY.CREDITS);
+      const hargaJual = Math.round(hargaBeli * (1 + margin / 100));
+      if(editCreditId){
+        const idx = credits.findIndex(c=>c.id===editCreditId);
+        if(idx>=0){
+          credits[idx] = {...credits[idx], memberId, item, hargaBeli, hargaJual, tenor, sisa: hargaJual, startDate: new Date().toISOString()};
+        }
+        editCreditId = null; $('titleKredit').textContent='Kredit Barang'; $('btnSaveKredit').textContent='Simpan Kredit';
+      } else {
+        credits.push({ id: uid('c'), memberId, item, hargaBeli, hargaJual, tenor, sisa: hargaJual, startDate: new Date().toISOString() });
+      }
+      save(KEY.CREDITS, credits);
+      $('inpItem').value=''; $('inpHargaBeli').value=''; $('inpMargin').value='20'; $('inpTenor').value='5';
+      renderKredit(); renderPiutang(); renderDashboard(); renderReport(false);
+    });
+    function prepareEditCredit(id){
+      const c = load(KEY.CREDITS).find(x=>x.id===id); if(!c) return;
+      editCreditId = id;
+      $('selMemberKredit').value = c.memberId;
+      $('inpItem').value = c.item;
+      $('inpHargaBeli').value = c.hargaBeli;
+      $('inpMargin').value = ((c.hargaJual/c.hargaBeli-1)*100).toFixed(0);
+      $('inpTenor').value = c.tenor;
+      $('titleKredit').textContent='Edit Kredit';
+      $('btnSaveKredit').textContent='Update Kredit';
+    }
+    function deleteCredit(id){
+      const credits = load(KEY.CREDITS).filter(x=>x.id!==id);
+      save(KEY.CREDITS, credits);
+      renderKredit(); renderPiutang(); renderDashboard(); renderReport(false);
+    }
+    function renderKredit(){
+      const credits = load(KEY.CREDITS);
+      const members = load(KEY.MEMBERS);
+      const cont = $('listKredit'); cont.innerHTML='';
+      const searchTerm = $('inpSearchKredit').value.toLowerCase();
+      const filteredCredits = credits.filter(c => {
+        const member = members.find(m => m.id === c.memberId) || {};
+        return member.name.toLowerCase().includes(searchTerm) || c.item.toLowerCase().includes(searchTerm);
+      }).slice().reverse();
+
+      if(filteredCredits.length===0){ cont.innerHTML = `<div class="muted small">Belum ada kredit.</div>`; return; }
+      filteredCredits.forEach(c=>{
+        const nm = (members.find(m=>m.id===c.memberId)||{}).name || '—';
+        const margin = ((c.hargaJual/c.hargaBeli-1)*100).toFixed(0);
+        const el = document.createElement('div'); el.className='item';
+        el.innerHTML = `<div>
+          <div style="font-weight:700">${nm} • ${c.item}</div>
+          <div class="small muted">Beli: ${fmtRupiah(c.hargaBeli)} • Jual: ${fmtRupiah(c.hargaJual)} (${margin}%) • Tenor: ${c.tenor} bln</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          <div class="pill">${fmtRupiah(c.sisa)} sisa</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn ghost" onclick="prepareEditCredit('${c.id}')">Edit</button>
+            <button class="btn danger" onclick="showModal('Hapus kredit ini?', { onConfirm: ()=>deleteCredit('${c.id}') })">Hapus</button>
+          </div>
+        </div>`;
+        cont.appendChild(el);
+      });
+    }
+
+    /* ========== Pembayaran ========== */
+    $('inpSearchPiutang').addEventListener('input', ()=> renderPiutang());
+    function renderPiutang(){
+      const credits = load(KEY.CREDITS).filter(c=>c.sisa > 0);
+      const members = load(KEY.MEMBERS);
+      const cont = $('listPiutang'); cont.innerHTML='';
+      const searchTerm = $('inpSearchPiutang').value.toLowerCase();
+      const filteredCredits = credits.filter(c => {
+        const member = members.find(m => m.id === c.memberId) || {};
+        return member.name.toLowerCase().includes(searchTerm) || c.item.toLowerCase().includes(searchTerm);
+      }).slice().reverse();
+
+      if(filteredCredits.length===0){ cont.innerHTML = `<div class="muted small">Tidak ada piutang berjalan.</div>`; return; }
+      filteredCredits.forEach(c=>{
+        const nm = (members.find(m=>m.id===c.memberId)||{}).name || '—';
+        const el = document.createElement('div'); el.className='item';
+        el.innerHTML = `<div>
+          <div style="font-weight:700">${nm} • ${c.item}</div>
+          <div class="muted small">Sisa: ${fmtRupiah(c.sisa)} • Mulai: ${new Date(c.startDate).toLocaleDateString()}</div>
+        </div>
+        <div style="text-align:right;display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+          <div style="font-weight:700">${fmtRupiah(c.hargaJual)}</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn ghost" onclick="showPaymentModal('${c.id}','${nm}','${c.item}','${c.sisa}')">Bayar</button>
+            <button class="btn ghost" onclick="prepareEditCredit('${c.id}')">Edit</button>
+            <button class="btn danger" onclick="showModal('Hapus kredit ini?', { onConfirm: ()=>deleteCredit('${c.id}') })">Hapus</button>
+          </div>
+        </div>`;
+        cont.appendChild(el);
+      });
+    }
+    function showPaymentModal(creditId, memberName, itemName, sisa){
+      showModal(`Bayar cicilan — ${memberName} • ${itemName} • Sisa ${fmtRupiah(sisa)}`, {
+        input: true,
+        inputValue: '',
+        placeholder: 'Masukkan jumlah bayar (Rp)',
+        onConfirm: (val) => {
+          const amt = Number(val) || 0;
+          if(amt <= 0){ return; }
+          const payments = load(KEY.PAYMENTS);
+          payments.push({ id: uid('p'), creditId, amount: amt, date: new Date().toISOString() });
+          save(KEY.PAYMENTS, payments);
+          // reduce sisa
+          const credits = load(KEY.CREDITS);
+          const idx = credits.findIndex(x=>x.id===creditId);
+          if(idx >= 0){
+            credits[idx].sisa = Math.max(0, (Number(credits[idx].sisa)||0) - amt);
+            save(KEY.CREDITS, credits);
+          }
+          renderPiutang(); renderPayments(); renderDashboard(); renderReport(false);
+        }
+      });
+    }
+    $('inpSearchPayments').addEventListener('input', ()=> renderPayments());
+    function renderPayments(){
+      const payments = load(KEY.PAYMENTS);
+      const credits = load(KEY.CREDITS);
+      const members = load(KEY.MEMBERS);
+      const cont = $('listPayments'); cont.innerHTML='';
+      const searchTerm = $('inpSearchPayments').value.toLowerCase();
+      const filteredPayments = payments.filter(p=>{
+        const c = credits.find(x=>x.id===p.creditId) || {};
+        const member = members.find(m => m.id === c.memberId) || {};
+        return member.name.toLowerCase().includes(searchTerm) || (c.item || '').toLowerCase().includes(searchTerm);
+      }).slice().reverse();
+
+      if(filteredPayments.length===0){ cont.innerHTML = `<div class="muted small">Belum ada pembayaran.</div>`; return; }
+      filteredPayments.forEach(p=>{
+        const c = credits.find(x=>x.id===p.creditId) || {};
+        const nm = (members.find(m=>m.id===c.memberId)||{}).name || '—';
+        const el = document.createElement('div'); el.className='item';
+        el.innerHTML = `<div>
+          <div style="font-weight:700">${nm} • ${c.item || '-'}</div>
+          <div class="muted small">${new Date(p.date).toLocaleString()}</div>
+        </div>
+        <div style="text-align:right;display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+            <div style="font-weight:700">${fmtRupiah(p.amount)}</div>
+            <div style="display:flex;gap:6px">
+                <button class="btn ghost" onclick="showEditPaymentModal('${p.id}')">Edit</button>
+                <button class="btn danger" onclick="showModal('Hapus pembayaran ini?', { onConfirm: ()=>deletePayment('${p.id}') })">Hapus</button>
+            </div>
+        </div>`;
+        cont.appendChild(el);
+      });
+    }
+
+    // Fungsi baru untuk mengedit dan menghapus pembayaran
+    function showEditPaymentModal(paymentId) {
+        const payments = load(KEY.PAYMENTS);
+        const payment = payments.find(p => p.id === paymentId);
+        if (!payment) return;
+        showModal(`Edit jumlah bayar: ${fmtRupiah(payment.amount)}`, {
+            input: true,
+            inputValue: payment.amount,
+            placeholder: 'Masukkan jumlah baru (Rp)',
+            onConfirm: (newAmount) => {
+                const newAmt = Number(newAmount) || 0;
+                if (newAmt <= 0) return;
+                const amountDiff = newAmt - payment.amount;
+                payment.amount = newAmt;
+                save(KEY.PAYMENTS, payments);
+                const credits = load(KEY.CREDITS);
+                const idx = credits.findIndex(c => c.id === payment.creditId);
+                if (idx >= 0) {
+                    credits[idx].sisa = (Number(credits[idx].sisa) || 0) - amountDiff;
+                    save(KEY.CREDITS, credits);
+                }
+                renderPiutang();
+                renderPayments();
+                renderDashboard();
+                renderReport(false);
+            }
+        });
+    }
+
+    function deletePayment(paymentId) {
+        const payments = load(KEY.PAYMENTS);
+        const payment = payments.find(p => p.id === paymentId);
+        if (!payment) return;
+        const updatedPayments = payments.filter(p => p.id !== paymentId);
+        save(KEY.PAYMENTS, updatedPayments);
+        const credits = load(KEY.CREDITS);
+        const idx = credits.findIndex(c => c.id === payment.creditId);
+        if (idx >= 0) {
+            credits[idx].sisa = (Number(credits[idx].sisa) || 0) + (Number(payment.amount) || 0);
+            save(KEY.CREDITS, credits);
+        }
+        renderPiutang();
+        renderPayments();
+        renderDashboard();
+        renderReport(false);
+    }
+    
+    /* ========== Biaya ========== */
+    $('inpSearchBiaya').addEventListener('input', ()=> renderBiaya());
+    $('btnSaveBiaya').addEventListener('click', ()=>{
+        const name = $('inpBiayaName').value.trim();
+        const amount = Number($('inpBiayaAmount').value) || 0;
+        if(!name || amount <= 0) return;
+        const expenses = load(KEY.EXPENSES);
+        expenses.push({ id: uid('e'), name, amount, date: new Date().toISOString() });
+        save(KEY.EXPENSES, expenses);
+        $('inpBiayaName').value = '';
+        $('inpBiayaAmount').value = '';
+        renderBiaya(); renderDashboard(); renderReport(false);
+    });
+
+    $('btnClearBiaya').addEventListener('click', ()=>{
+        $('inpBiayaName').value = '';
+        $('inpBiayaAmount').value = '';
+    });
+
+    function renderBiaya(){
+        const expenses = load(KEY.EXPENSES);
+        const cont = $('listBiaya'); cont.innerHTML = '';
+        const searchTerm = $('inpSearchBiaya').value.toLowerCase();
+        const filteredExpenses = expenses.filter(e => e.name.toLowerCase().includes(searchTerm)).slice().reverse();
+
+        if (filteredExpenses.length === 0) {
+            cont.innerHTML = `<div class="muted small">Belum ada biaya operasional.</div>`;
+            return;
+        }
+        filteredExpenses.forEach(e => {
+            const el = document.createElement('div');
+            el.className = 'item';
+            el.innerHTML = `
+                <div>
+                    <div style="font-weight:700">${e.name}</div>
+                    <div class="muted small">${new Date(e.date).toLocaleDateString()}</div>
+                </div>
+                <div style="text-align:right;display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+                    <div style="font-weight:700">${fmtRupiah(e.amount)}</div>
+                    <div style="display:flex;gap:6px">
+                        <button class="btn danger" onclick="showModal('Hapus biaya ini?', { onConfirm: ()=>deleteBiaya('${e.id}') })">Hapus</button>
+                    </div>
+                </div>`;
+            cont.appendChild(el);
+        });
+    }
+
+    function deleteBiaya(id){
+      const expenses = load(KEY.EXPENSES).filter(e=>e.id!==id);
+      save(KEY.EXPENSES, expenses);
+      renderBiaya(); renderDashboard(); renderReport(false);
+    }
+
+
+    /* ========== Laporan (tanpa alert mengganggu) ========== */
+    $('btnShowReport').addEventListener('click', ()=> renderReport(false));
+    $('btnExportCSV').addEventListener('click', ()=> exportCurrentReportCSV());
+    
+    function renderReport(aggressive=false){
+      const mode = $('selReportMode').value;
+      if(mode === 'monthly'){
+        const ym = $('inpReportMonth').value;
+        if(!ym){
+          $('reportContent').innerHTML = `<div class="muted-block">Silakan pilih <b>bulan</b> terlebih dahulu untuk menampilkan laporan bulanan.</div>`;
+          return;
+        }
+        renderMonthlyReport(ym);
+      } else {
+        renderCumulativeReport();
+      }
+    }
+
+    function renderMonthlyReport(ym){
+      const [year, month] = ym.split('-').map(Number);
+      const start = new Date(year, month-1, 1);
+      const end = new Date(year, month, 1);
+      const deposits = load(KEY.DEPOSITS).filter(d=>{ const dt=new Date(d.date); return dt >= start && dt < end; });
+      const payments = load(KEY.PAYMENTS).filter(p=>{ const dt=new Date(p.date); return dt >= start && dt < end; });
+      const expenses = load(KEY.EXPENSES).filter(e=>{ const dt=new Date(e.date); return dt >= start && dt < end; });
+      const credits = load(KEY.CREDITS);
+      renderReportHtml(deposits, payments, credits, expenses, `Laporan Bulanan — ${year}-${String(month).padStart(2,'0')}`, ym);
+    }
+
+    function renderCumulativeReport(){
+      const deposits = load(KEY.DEPOSITS);
+      const payments = load(KEY.PAYMENTS);
+      const expenses = load(KEY.EXPENSES);
+      const credits = load(KEY.CREDITS);
+      renderReportHtml(deposits, payments, credits, expenses, `Laporan Akumulasi (Sejak Awal)`, null);
+    }
+
+    function renderReportHtml(deposits, payments, credits, expenses, title, periodYm=null){
+      const members = load(KEY.MEMBERS);
+      const totalDeposits = deposits.reduce((s,d)=> s + (Number(d.amount)||0), 0);
+      const totalExpenses = expenses.reduce((s,d)=> s + (Number(d.amount)||0), 0);
+      let totalProfit = 0;
+      payments.forEach(p=>{
+        const c = credits.find(x=>x.id===p.creditId); if(!c) return;
+        const margin = (Number(c.hargaJual)||0) - (Number(c.hargaBeli)||0);
+        const share = (Number(p.amount)||0) / (Number(c.hargaJual)||1);
+        totalProfit += margin * share;
+      });
+      const totalNetProfit = totalProfit - totalExpenses;
+
+      let html = `<div class="card"><h4>${title}</h4>
+        <div class="stat-grid">
+          <div class="card small muted"><div>Total Setoran (periode)</div><div style="font-weight:800;margin-top:8px">${fmtRupiah(totalDeposits)}</div></div>
+          <div class="card small muted"><div>Total Keuntungan Kotor (periode)</div><div style="font-weight:800;margin-top:8px">${fmtRupiah(totalProfit)}</div></div>
+          <div class="card small muted"><div>Total Biaya (periode)</div><div style="font-weight:800;margin-top:8px">${fmtRupiah(totalExpenses)}</div></div>
+          <div class="card small muted"><div>Total Keuntungan Bersih (periode)</div><div style="font-weight:800;margin-top:8px">${fmtRupiah(totalNetProfit)}</div></div>
+          <div class="card small muted"><div>Jumlah Anggota</div><div style="font-weight:800;margin-top:8px">${members.length}</div></div>
+        </div></div>`;
+
+      html += `<div class="card"><h4>Rincian Per Anggota</h4>`;
+      if(members.length === 0){ html += `<div class="muted">Belum ada anggota.</div></div>`; $('reportContent').innerHTML = html; return; }
+
+      members.forEach(m=>{
+        const memberDeposits = deposits.filter(d=>d.memberId===m.id).reduce((s,x)=> s + (Number(x.amount)||0), 0);
+        const memberCreditsInPeriod = load(KEY.CREDITS).filter(c=>{
+          if(!periodYm) return true;
+          const [y,mth] = periodYm.split('-').map(Number);
+          const dt = new Date(c.startDate);
+          return dt.getFullYear() === y && (dt.getMonth()+1) === mth;
+        }).filter(c=>c.memberId===m.id);
+        const totalCreditMember = memberCreditsInPeriod.reduce((s,c)=> s + (Number(c.hargaJual)||0), 0);
+        const share = (totalDeposits > 0) ? totalNetProfit * (memberDeposits / totalDeposits) : 0;
+        const claims = load(KEY.CLAIMS).filter(cl=>{
+          if(cl.memberId !== m.id) return false;
+          if(!periodYm) return true;
+          const dt = new Date(cl.date); const [y,mth] = periodYm.split('-').map(Number);
+          return dt.getFullYear() === y && (dt.getMonth()+1) === mth;
+        });
+        const claimedAmt = claims.reduce((s,c)=> s + (Number(c.amount)||0), 0);
+        const available = Math.max(0, share - claimedAmt);
+        html += `<div class="item">
+          <div>
+            <div style="font-weight:800">${m.name}</div>
+            <div class="muted small">Setoran: ${fmtRupiah(memberDeposits)} • Kredit (periode): ${fmtRupiah(totalCreditMember)}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="pill">${fmtRupiah(available)} tersedia</div>
+            <div class="muted small">Porsi ${(totalDeposits>0?((memberDeposits/totalDeposits*100).toFixed(2)):'0')}%</div>
+          </div>
+        </div>`;
+      });
+      html += `</div>`;
+      $('reportContent').innerHTML = html;
+      window._lastReportSnapshot = { title, members, deposits, payments, credits, expenses, totalDeposits, totalProfit, totalNetProfit, periodYm };
+    }
+
+    function exportCurrentReportCSV(){
+      const snap = window._lastReportSnapshot;
+      if(!snap){ $('reportContent').innerHTML = `<div class="muted-block">Tampilkan laporan dulu sebelum ekspor CSV.</div>`; return; }
+      const rows = [];
+      rows.push(['Report', snap.title].join(',')); rows.push([]);
+      rows.push(['Member','TotalSetoran','TotalKredit(periode)','AvailableShare','SharePercent']);
+      const { members, deposits, credits } = snap;
+      members.forEach(m=>{
+        const memberDeposits = deposits.filter(d=>d.memberId===m.id).reduce((s,x)=> s + (+x.amount||0), 0);
+        const memberCredits = (snap.periodYm
+          ? credits.filter(c=>{const dt=new Date(c.startDate); const [y,m]=snap.periodYm.split('-').map(Number); return c.memberId===m.id && dt.getFullYear()===y && (dt.getMonth()+1)===m;})
+          : credits.filter(c=>c.memberId===m.id)
+        );
+        const totalCreditMember = memberCredits.reduce((s,c)=> s + (+c.hargaJual||0), 0);
+        const share = (snap.totalDeposits > 0) ? snap.totalNetProfit * (memberDeposits / snap.totalDeposits) : 0;
+        const claims = load(KEY.CLAIMS).filter(cl=>{
+          if(cl.memberId !== m.id) return false;
+          if(!snap.periodYm) return true;
+          const dt = new Date(cl.date); const [y,mm]=snap.periodYm.split('-').map(Number);
+          return dt.getFullYear()===y && (dt.getMonth()+1)===mm;
+        });
+        const claimed = claims.reduce((s,c)=>s+(+c.amount||0),0);
+        const available = Math.max(0, Math.round(share - claimed));
+        const percent = snap.totalDeposits>0 ? ((memberDeposits / snap.totalDeposits)*100).toFixed(2) : '0.00';
+        rows.push([m.name, memberDeposits, totalCreditMember, available, percent].join(','));
+      });
+      const csv = rows.join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const fname = (snap.periodYm ? `report_${snap.periodYm}.csv` : `report_acc_${new Date().toISOString().slice(0,10)}.csv`);
+      a.download = fname; a.click(); URL.revokeObjectURL(url);
+    }
+    
+    /* ========== Export/Import Data ========== */
+    function exportData(){
+        const data = {};
+        for(let key of Object.values(KEY)){
+            data[key] = load(key);
+        }
+        const json = JSON.stringify(data, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `bmt_haen_data.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    $('inpImportFile').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            $('btnImport').style.display = 'inline-block';
+        } else {
+            $('btnImport').style.display = 'none';
+        }
+    });
+
+    function importData(){
+        const file = $('inpImportFile').files[0];
+        if(!file){ return; }
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                showModal('Data akan diimpor dan menimpa data yang ada. Lanjutkan?', {
+                    onConfirm: () => {
+                        for(let key of Object.values(KEY)){
+                            if(data[key]){
+                                save(key, data[key]);
+                            }
+                        }
+                        location.reload(); // Refresh halaman untuk memuat data baru
+                    }
+                });
+            } catch (e) {
+                showModal('Gagal mengimpor file. Pastikan file valid.');
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    /* Selectors population & reset */
+    function populateMemberSelectors(){
+      const members = load(KEY.MEMBERS);
+      ['selMemberSetor','selMemberKredit','selEditMember','selMemberClaim'].forEach(id=>{
+        const el = $(id); if(!el) return;
+        el.innerHTML = '<option value="">-- pilih anggota --</option>';
+        members.forEach(m=>{
+          const o = document.createElement('option'); o.value = m.id; o.textContent = m.name; el.appendChild(o);
+        });
+      });
+    }
+    $('btnReset').addEventListener('click', ()=>{
+      showModal('Reset semua data? (anggota diisi ulang 1–50)', {
+        onConfirm: ()=>{
+          for(let key of Object.values(KEY)){ localStorage.removeItem(key); }
+          seedMembers(); initApp();
+        }
+      });
+    });
+
+    /* Init */
+    function initApp(){
+      seedMembers();
+      populateMemberSelectors();
+      renderDashboard();
+      renderMembers();
+      renderSetoran();
+      renderKredit();
+      renderPiutang();
+      renderClaims();
+      renderBiaya();
+      renderPayments();
+      $('selReportMode').value = 'acc';
+      $('reportContent').innerHTML = `<div class="muted-block">Mode <b>Akumulasi</b> menampilkan semua data sejak awal. Pilih <b>Bulanan</b> bila ingin laporan periode tertentu.</div>`;
+    }
+    initApp();
+  </script>
+</body>
+</html>
