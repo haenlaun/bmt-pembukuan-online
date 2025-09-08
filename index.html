@@ -483,6 +483,13 @@
       $('inpNewMember').value='';
       renderMembers(); populateMemberSelectors(); renderDashboard(); renderReport(false);
     });
+    // Menambahkan fungsionalitas Enter
+    $('inpNewMember').addEventListener('keyup', (event) => {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            $('btnAddMember').click();
+        }
+    });
 
     $('btnUpdateMember').addEventListener('click', ()=>{
       const id = $('selEditMember').value;
@@ -543,6 +550,14 @@
       $('inpClaimAmount').value = '';
       renderClaims(); renderDashboard(); renderReport(false);
     });
+    // Menambahkan fungsionalitas Enter
+    $('inpClaimAmount').addEventListener('keyup', (event) => {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            $('btnClaim').click();
+        }
+    });
+
     function computeAvailableForMember(memberId, monthYm=null){
       const payments = load(KEY.PAYMENTS);
       const credits = load(KEY.CREDITS);
@@ -601,6 +616,13 @@
       save(KEY.DEPOSITS, deposits);
       $('inpSetorAmount').value=''; $('inpSetorDate').value='';
       renderSetoran(); renderDashboard(); renderReport(false);
+    });
+    // Menambahkan fungsionalitas Enter
+    $('inpSetorAmount').addEventListener('keyup', (event) => {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            $('btnSaveSetor').click();
+        }
     });
 
     $('btnMassSetor').addEventListener('click', ()=>{
@@ -704,6 +726,14 @@
       $('inpItem').value=''; $('inpHargaBeli').value=''; $('inpMargin').value='20'; $('inpTenor').value='5';
       renderKredit(); renderPiutang(); renderDashboard(); renderReport(false);
     });
+    // Menambahkan fungsionalitas Enter
+    $('inpTenor').addEventListener('keyup', (event) => {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            $('btnSaveKredit').click();
+        }
+    });
+
     function prepareEditCredit(id){
       const c = load(KEY.CREDITS).find(x=>x.id===id); if(!c) return;
       editCreditId = id;
@@ -895,6 +925,13 @@
         $('inpBiayaName').value = '';
         $('inpBiayaAmount').value = '';
         renderBiaya(); renderDashboard(); renderReport(false);
+    });
+    // Menambahkan fungsionalitas Enter
+    $('inpBiayaAmount').addEventListener('keyup', (event) => {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            $('btnSaveBiaya').click();
+        }
     });
 
     $('btnClearBiaya').addEventListener('click', ()=>{
